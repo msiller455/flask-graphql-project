@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -38,7 +41,22 @@ class Post(db.Model):
         return '<Post %r>' % self.title
 
 # Schema Objects
-# TO-DO
+class PostObject(SQLAlchemyObjectType):
+    class Meta:
+        model = Post
+        interfaces = (graphene.relay.Node, )
+
+class UserObject(SQLAlchemyObjectType):
+    class Meta:
+        model = User
+        interfaces = (graphene.relay.Node, )
+
+class Query(graphene.ObjectType):
+    node = graphene.relay.Node.Field()
+    all_posts = SQLAlchemyConnectionField(PostObject)
+    all_users = SQLAlchemyConnectionField(UserObject)
+
+schema = graphene.Schema(query=Query)
 
 # Routes
 # TO-DO
