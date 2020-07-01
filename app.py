@@ -76,7 +76,7 @@ class CreatePost(graphene.Mutation):
         db.session.add(post)
         db.session.commit()
 
-        return CreatePOst(post=post)
+        return CreatePost(post=post)
 
 class Mutation(graphene.ObjectType):
     create_post = CreatePost.Field()
