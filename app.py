@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from flask_graphql import GraphQLView
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -59,7 +60,14 @@ class Query(graphene.ObjectType):
 schema = graphene.Schema(query=Query)
 
 # Routes
-# TO-DO
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view(
+        'graphql',
+        schema=schema,
+        graphiql=True # enables the graphiql interface
+    )
+)
 
 @app.route('/')
 def index():
